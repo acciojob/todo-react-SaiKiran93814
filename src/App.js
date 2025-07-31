@@ -2,20 +2,20 @@ import React, { useState } from 'react';
 import Todo from './Todo';
 import './App.css';
 
-
 const App = () => {
   const [task, setTask] = useState('');
   const [todoList, setTodoList] = useState([]);
 
   const handleAddTodo = () => {
     if (task.trim() !== '') {
-      setTodoList([...todoList, task]);
+      const newTodo = { id: Date.now(), text: task };
+      setTodoList([...todoList, newTodo]);
       setTask('');
     }
   };
 
-  const handleDeleteTodo = (indexToRemove) => {
-    const updatedList = todoList.filter((_, index) => index !== indexToRemove);
+  const handleDeleteTodo = (idToRemove) => {
+    const updatedList = todoList.filter(todo => todo.id !== idToRemove);
     setTodoList(updatedList);
   };
 
@@ -29,7 +29,9 @@ const App = () => {
           onChange={(e) => setTask(e.target.value)}
           placeholder="Enter a task"
         />
-        <button onClick={handleAddTodo}>Add Todo</button>
+        <button onClick={handleAddTodo} disabled={task.trim() === ''}>
+            Add Todo
+        </button>
       </div>
       <Todo todoList={todoList} onDelete={handleDeleteTodo} />
     </div>
