@@ -1,41 +1,52 @@
 import React, { useState } from 'react';
-import Todo from './Todo';
 import './App.css';
 
-const App = () => {
+function App() {
   const [task, setTask] = useState('');
-  const [todoList, setTodoList] = useState([]);
+  const [todos, setTodos] = useState([]);
 
-  const handleAddTodo = () => {
+  const handleAddTask = () => {
     if (task.trim() !== '') {
-      const newTodo = { id: Date.now(), text: task };
-      setTodoList([...todoList, newTodo]);
+      setTodos([...todos, task]);
       setTask('');
     }
   };
 
-  const handleDeleteTodo = (idToRemove) => {
-    const updatedList = todoList.filter(todo => todo.id !== idToRemove);
-    setTodoList(updatedList);
+  const handleDeleteTask = (index) => {
+    const newTodos = todos.filter((_, i) => i !== index);
+    setTodos(newTodos);
   };
 
   return (
     <div className="app-container">
       <h1>To-Do List</h1>
-      <div className="input-container">
+      <div className="input-section">
         <input
           type="text"
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="Enter a task"
+          data-testid="task-input"
         />
-        <button onClick={handleAddTodo} disabled={task.trim() === ''}>
-            Add Todo
+        <button onClick={handleAddTask} data-testid="add-button">
+          Add Todo
         </button>
       </div>
-      <Todo todoList={todoList} onDelete={handleDeleteTodo} />
+      <ul className="todo-list">
+        {todos.map((todo, index) => (
+          <li key={index} className="todo-item" data-testid={`todo-item-${index}`}>
+            {todo}
+            <button
+              onClick={() => handleDeleteTask(index)}
+              data-testid={`delete-button-${index}`}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
 
 export default App;
